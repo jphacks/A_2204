@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  front:
+    build: 
+      context: ./front
+      dockerfile: Dockerfile
+    volumes:
+      - ./front:/app
+    ports:
+      - "8080:3000"
+    tty: true
+    environment:
+      NODE_ENV: development
+
+  back:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    volumes:
+      - ./back:/app
+    ports:
+      - "3000:3000"
+    tty: true
+
+  db:
+    image: mysql:latest
