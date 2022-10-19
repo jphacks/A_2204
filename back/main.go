@@ -1,6 +1,7 @@
 package main
 
 import (
+	"dietApp/controllers"
 	"dietApp/myMiddleware"
 	"log"
 	"net/http"
@@ -36,6 +37,25 @@ func main() {
 	api.GET("/test", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, c.Get("claims").(*validator.ValidatedClaims).RegisteredClaims)
 	})
+
+	// /api/user/meals
+	api.GET("/user/meals", controllers.GET_user_meals)
+	api.GET("/user/meals/:id", controllers.GET_user_meals_id)
+	api.POST("/user/meals", controllers.POST_user_meals)
+	api.DELETE("/user/meals/:id", controllers.DELETE_user_meals_id)
+	api.PUT("/user/meals/:id", controllers.PUT_user_meals_id)
+
+	// /api/user/weights
+	api.GET("/user/weights", controllers.GET_user_weights)
+	api.GET("/user/weights/:id", controllers.GET_user_weights_id)
+	api.POST("/user/weights", controllers.POST_user_weights)
+	api.DELETE("/user/weights/:id", controllers.DELETE_user_weights_id)
+	api.PUT("/user/weights/:id", controllers.PUT_user_weights_id)
+
+	// /api/user/character
+	api.GET("/user/character", controllers.GET_user_character)
+	api.PUT("/user/character", controllers.PUT_user_character)
+
 	// ===================================================
 
 	// Hello Worldを返すエンドポイントの作成
