@@ -3,6 +3,7 @@ package main
 import (
 	"dietApp/controllers"
 	"dietApp/myMiddleware"
+	"dietApp/operateDb"
 	"log"
 	"net/http"
 	"os"
@@ -18,6 +19,10 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Failed to load .env")
 	}
+
+	// データベースの初期化
+	operateDb.Init()
+	defer operateDb.CloseDb()
 
 	e := echo.New()
 

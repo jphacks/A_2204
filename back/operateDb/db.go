@@ -1,6 +1,7 @@
 package operateDb
 
 import (
+	"os"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -40,10 +41,10 @@ type character struct {
 
 func Init() {
 	DBMS := "mysql"
-	USER := "root"
-	PASS := ""
-	PROTOCOL := "tcp(localhost:3306)"
-	DBNAME := "dietapp"
+	USER := os.Getenv("DB_USER")
+	PASS := os.Getenv("DB_PASSWORD")
+	PROTOCOL := os.Getenv("DB_PROTOCOL")
+	DBNAME := os.Getenv("DB_DBNAME")
 
 	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME
 	//データベースを開ける
