@@ -12,26 +12,29 @@ var db *gorm.DB
 
 // データベースに入れるtable
 type User struct {
-	Id       int       `json:"id" gorm:"primaryKey" gorm:"AUTO_INCREMENT"`
-	Auth0_id string    `json:"auth0_id"`
+	Id       int       `json:"id" gorm:"primaryKey;autoIncrement"`
+	Auth0_id string    `json:"auth0_id" gorm:"unique"`
 	Height   float64   `json:"height"`
 	Birthday time.Time `json:"birthday"`
 }
 type User_meal struct {
-	Id      int       `json:"id" gorm:"primaryKey" gorm:"AUTO_INCREMENT"`
+	Id      int       `json:"id" gorm:"primaryKey;autoIncrement"`
 	User_id int       `json:"user_id"`
+	User    User      `gorm:"foreignKey:User_id"`
 	Name    string    `json:"name"`
 	Calorie int       `json:"calorie"`
 	At      time.Time `json:"at"`
 }
 type User_weight struct {
-	Id      int       `json:"id" gorm:"primaryKey" gorm:"AUTO_INCREMENT"`
+	Id      int       `json:"id" gorm:"primaryKey;autoIncrement"`
 	User_id int       `json:"user_id"`
+	User    User      `gorm:"foreignKey:User_id"`
 	Weight  float64   `json:"weight"`
-	At      time.Time `json:"data"`
+	At      time.Time `json:"at"`
 }
 type Character struct {
-	User_id int       `json:"user_id" gorm:"primaryKey" gorm:"AUTO_INCREMENT"`
+	User_id int       `json:"user_id" gorm:"primaryKey"`
+	User    User      `gorm:"foreignKey:User_id"`
 	Name    string    `json:"name"`
 	Level   int       `json:"level"`
 	Weight  float64   `json:"weight"`
@@ -52,7 +55,11 @@ func Init() {
 	//ローカル変数のdbCOnをグローバル変数のdbに入れる
 	db = dbCon
 	//作成するtableの構造体を引数に入れてテーブルを作る
-	db.AutoMigrate(&User{}, &User_meal{}, &User_weight{}, &Character{})
+	db.AutoMigrate(&User{})
+	db.AutoMigrate(&User_meal{}).AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
+	db.AutoMigrate(&User_weight{}).AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
+	db.AutoMigrate(&Character{}).AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
+
 	if err != nil {
 		panic(err.Error())
 	}
