@@ -12,6 +12,9 @@ services:
     tty: true
     environment:
       NODE_ENV: development
+      port: 3000
+      HOST: 0.0.0.0
+      API_URL: "http://localhost:3001"
 
   back:
     build:
@@ -25,3 +28,15 @@ services:
 
   db:
     image: mysql:latest
+
+  api-mock:
+    build:
+      context: ./api-mockserver
+      dockerfile: Dockerfile
+    volumes:
+      - ./api-mockserver:/app
+    tty: true
+    ports: 
+      - "3001:3000"
+    command: json-server --watch /app/api.json --routes /app/routes.json --host 0.0.0.0
+    
