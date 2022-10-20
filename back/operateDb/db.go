@@ -1,6 +1,7 @@
 package operateDb
 
 import (
+	"os"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -10,26 +11,26 @@ import (
 var db *gorm.DB
 
 // データベースに入れるtable
-type user struct {
+type User struct {
 	Id       int       `json:"id" gorm:"primaryKey" gorm:"AUTO_INCREMENT"`
 	Auth0_id string    `json:"auth0_id"`
 	Height   float64   `json:"height"`
 	Birthday time.Time `json:"birthday"`
 }
-type user_meal struct {
+type User_meal struct {
 	Id      int       `json:"id" gorm:"primaryKey" gorm:"AUTO_INCREMENT"`
 	User_id int       `json:"user_id"`
 	Name    string    `json:"name"`
 	Calorie int       `json:"calorie"`
 	At      time.Time `json:"at"`
 }
-type user_weight struct {
+type User_weight struct {
 	Id      int       `json:"id" gorm:"primaryKey" gorm:"AUTO_INCREMENT"`
 	User_id int       `json:"user_id"`
 	Weight  float64   `json:"weight"`
 	At      time.Time `json:"data"`
 }
-type character struct {
+type Character struct {
 	User_id int       `json:"user_id" gorm:"primaryKey" gorm:"AUTO_INCREMENT"`
 	Name    string    `json:"name"`
 	Level   int       `json:"level"`
@@ -40,10 +41,10 @@ type character struct {
 
 func Init() {
 	DBMS := "mysql"
-	USER := "root"
-	PASS := ""
-	PROTOCOL := "tcp(localhost:3306)"
-	DBNAME := "dietapp"
+	USER := os.Getenv("DB_USER")
+	PASS := os.Getenv("DB_PASSWORD")
+	PROTOCOL := os.Getenv("DB_PROTOCOL")
+	DBNAME := os.Getenv("DB_DBNAME")
 
 	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME
 	//データベースを開ける
@@ -51,7 +52,7 @@ func Init() {
 	//ローカル変数のdbCOnをグローバル変数のdbに入れる
 	db = dbCon
 	//作成するtableの構造体を引数に入れてテーブルを作る
-	db.AutoMigrate(&user{}, &user_meal{}, &user_weight{}, &character{})
+	db.AutoMigrate(&User{}, &User_meal{}, &User_weight{}, &Character{})
 	if err != nil {
 		panic(err.Error())
 	}
