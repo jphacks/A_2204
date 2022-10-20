@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"dietApp/operateDb"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -23,7 +24,20 @@ func GET_user_meals_id(c echo.Context) error {
 
 // POST /user/meals
 func POST_user_meals(c echo.Context) error {
-	return c.JSON(http.StatusOK, SampleJSON{"Coming soon"})
+
+	//構造体を読み込む
+	u := new(operateDb.User_meal)
+	if err := c.Bind(u); err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	db := operateDb.GetConnect()
+	//DBにinsertをする
+	if err := db.Create(&u).Error; err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	return c.JSON(http.StatusOK, u)
 }
 
 // DELETE /user/meals/:id
@@ -49,7 +63,20 @@ func GET_user_weights_id(c echo.Context) error {
 
 // POST /user/weights
 func POST_user_weights(c echo.Context) error {
-	return c.JSON(http.StatusOK, SampleJSON{"Coming soon"})
+
+	//構造体を読み込む
+	u := new(operateDb.User_weight)
+	if err := c.Bind(u); err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	db := operateDb.GetConnect()
+	//DBにinsertをする
+	if err := db.Create(&u).Error; err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	return c.JSON(http.StatusOK, u)
 }
 
 // DELETE /user/weights/:id
