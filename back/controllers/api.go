@@ -48,11 +48,11 @@ func GET_user_meals(c echo.Context) error {
 
 	before, err := time.Parse(time.RFC3339Nano, c.QueryParam("before"))
 	if err == nil {
-		db = db.Where("at < ?", before)
+		db = db.Where("at <= ?", before)
 	}
 	after, err := time.Parse(time.RFC3339Nano, c.QueryParam("after"))
 	if err == nil {
-		db = db.Where("? < at", after)
+		db = db.Where("? <= at", after)
 	}
 
 	name := c.QueryParam("name")
@@ -62,11 +62,11 @@ func GET_user_meals(c echo.Context) error {
 
 	calorieMin, err := strconv.Atoi(c.QueryParam("calorie_min"))
 	if err == nil {
-		db = db.Where("? < calorie", calorieMin)
+		db = db.Where("? <= calorie", calorieMin)
 	}
 	calorieMax, err := strconv.Atoi(c.QueryParam("calorie_max"))
 	if err == nil {
-		db = db.Where("calorie < ?", calorieMax)
+		db = db.Where("calorie <= ?", calorieMax)
 	}
 
 	userMeals := []User_meal_res{}
@@ -107,20 +107,20 @@ func GET_user_weights(c echo.Context) error {
 
 	before, err := time.Parse(time.RFC3339Nano, c.QueryParam("before"))
 	if err == nil {
-		db = db.Where("at < ?", before)
+		db = db.Where("at <= ?", before)
 	}
 	after, err := time.Parse(time.RFC3339Nano, c.QueryParam("after"))
 	if err == nil {
-		db = db.Where("? < at", after)
+		db = db.Where("? <= at", after)
 	}
 
 	weightMin, err := strconv.ParseFloat(c.QueryParam("weight_min"), 64)
 	if err == nil {
-		db = db.Where("? < weight", weightMin)
+		db = db.Where("? <= weight", weightMin)
 	}
 	weightMax, err := strconv.ParseFloat(c.QueryParam("weight_max"), 64)
 	if err == nil {
-		db = db.Where("calorie < ?", weightMax)
+		db = db.Where("weight <= ?", weightMax)
 	}
 
 	userWeights := []User_weight_res{}
