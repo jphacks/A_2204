@@ -30,7 +30,22 @@ func POST_user_meals(c echo.Context) error {
 
 // DELETE /user/meals/:id
 func DELETE_user_meals_id(c echo.Context) error {
-	return c.JSON(http.StatusOK, SampleJSON{"Coming soon"})
+	id := c.Param("id")
+	var int_id int
+	//stringからintにキャスト
+	int_id, _ = strconv.Atoi(id)
+	//構造体を読み込む
+	u := new(operateDb.User_meal)
+	if err := c.Bind(u); err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+	u.Id = int_id
+	db := operateDb.GetConnect()
+	// 削除したいレコードの情報を埋める
+	db.First(&u)
+	// 完全にレコードを特定できる状態で削除を行う
+	db.Delete(&u)
+	return c.JSON(http.StatusOK, u)
 }
 
 // PUT /user/meals/:id
@@ -67,7 +82,7 @@ func DELETE_user_weights_id(c echo.Context) error {
 	}
 	u.Id = int_id
 	db := operateDb.GetConnect()
-	// まずは削除したいレコードの情報を埋める
+	// 削除したいレコードの情報を埋める
 	db.First(&u)
 	// 完全にレコードを特定できる状態で削除を行う
 	db.Delete(&u)
