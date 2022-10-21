@@ -22,10 +22,11 @@ type User_meal_res struct {
 	At      time.Time `json:"at"`
 }
 
-type User_weights_res struct {
-	Id     int       `json:"id"`
-	Weight float64   `json:"weight"`
-	At     time.Time `json:"at"`
+type User_weight_res struct {
+	Id      int       `json:"id"`
+	User_id int       `json:"user_id"`
+	Weight  float64   `json:"weight"`
+	At      time.Time `json:"at"`
 }
 
 // =========== /user/meals ===========
@@ -90,7 +91,35 @@ func PUT_user_meals_id(c echo.Context) error {
 // =========== /user/weights ============
 // GET /user/weights
 func GET_user_weights(c echo.Context) error {
-	return c.JSON(http.StatusOK, SampleJSON{"Coming soon"})
+	db := operateDb.GetConnect()
+	claims := c.Get("claims").(*validator.ValidatedClaims)
+	var user operateDb.User
+	db.Model(&operateDb.User{Auth0_id: claims.RegisteredClaims.Subject}).First(&user)
+
+	db = db.Where("user_id = ?", user.Id)
+
+	before, err := time.Parse(time.RFC3339Nano, c.QueryParam("before"))
+	if err == nil {
+		db = db.Where("at < ?", before)
+	}
+	after, err := time.Parse(time.RFC3339Nano, c.QueryParam("after"))
+	if err == nil {
+		db = db.Where("? < at", after)
+	}
+
+	weightMin, err := strconv.ParseFloat(c.QueryParam("weight_min"), 64)
+	if err == nil {
+		db = db.Where("? < weight", weightMin)
+	}
+	weightMax, err := strconv.ParseFloat(c.QueryParam("weight_max"), 64)
+	if err == nil {
+		db = db.Where("calorie < ?", weightMax)
+	}
+
+	userWeights := []User_weight_res{}
+	db.Table("user_weights").Find(&userWeights)
+
+	return c.JSON(http.StatusOK, userWeights)
 }
 
 // GET /user/weights/:id
