@@ -29,6 +29,13 @@ type User_weight_res struct {
 	At      time.Time `json:"at"`
 }
 
+type Character_res struct {
+	User_id int    `json:"user_id"`
+	Name    string `json:"name"`
+	Level   int    `json:"level"`
+	Exp     int    `json:"exp"`
+}
+
 // =========== /user/meals ===========
 // GET /user/meals
 func GET_user_meals(c echo.Context) error {
@@ -146,7 +153,16 @@ func PUT_user_weights_id(c echo.Context) error {
 
 // GET /user/character
 func GET_user_character(c echo.Context) error {
-	return c.JSON(http.StatusOK, SampleJSON{"Coming soon"})
+	db := operateDb.GetConnect()
+	claims := c.Get("claims").(*validator.ValidatedClaims)
+	var user operateDb.User
+	db.Model(&operateDb.User{Auth0_id: claims.RegisteredClaims.Subject}).First(&user)
+
+	db = db.Where("user_id = ?", user.Id)
+
+	character := &Character_res{}
+	db.Table("characters").First(character)
+	return c.JSON(http.StatusOK, character)
 }
 
 // PUT /user/character
