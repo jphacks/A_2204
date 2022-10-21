@@ -18,7 +18,7 @@ type User_req struct {
 	Id       string  `json:"id"`
 	Auth0_id string  `json:"auth0_id"`
 	Height   float64 `json:"height"`
-	Birthday string  `json:"birthday"`
+	Birthday int64   `json:"birthday"`
 }
 type User_meal_res struct {
 	Id      int       `json:"id"`
@@ -65,11 +65,7 @@ func POST_user(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 	user.Height = reqBody.Height
-	birthdayUnix, err := strconv.ParseInt(reqBody.Birthday, 10, 64)
-	if err != nil {
-		return c.String(http.StatusBadRequest, err.Error())
-	}
-	user.Birthday = time.Unix(birthdayUnix, 0)
+	user.Birthday = time.Unix(reqBody.Birthday, 0)
 
 	if err := db.Create(&user).Error; err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
@@ -89,12 +85,8 @@ func PUT_user(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "bad request")
 	}
 
-	birthdayUnix, err := strconv.ParseInt(reqBody.Birthday, 10, 64)
-	if err != nil {
-		return c.String(http.StatusBadRequest, err.Error())
-	}
 	user.Height = reqBody.Height
-	user.Birthday = time.Unix(birthdayUnix, 0)
+	user.Birthday = time.Unix(reqBody.Birthday, 0)
 
 	if err := db.Table("users").Where("id = ?", user.Id).Updates(operateDb.User{Height: user.Height, Birthday: user.Birthday}).Error; err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
