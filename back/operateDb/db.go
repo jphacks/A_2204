@@ -33,13 +33,11 @@ type User_weight struct {
 	At      time.Time `json:"at"`
 }
 type Character struct {
-	User_id int       `json:"user_id" gorm:"primaryKey"`
-	User    User      `gorm:"foreignKey:User_id"`
-	Name    string    `json:"name"`
-	Level   int       `json:"level"`
-	Weight  float64   `json:"weight"`
-	At      time.Time `json:"at"`
-	Exp     int       `json:"exp"`
+	User_id int    `json:"user_id" gorm:"primaryKey"`
+	User    User   `gorm:"foreignKey:User_id"`
+	Name    string `json:"name"`
+	Level   int    `json:"level"`
+	Exp     int    `json:"exp"`
 }
 
 func Init() {
