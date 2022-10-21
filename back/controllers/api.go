@@ -82,17 +82,58 @@ func GET_user_meals_id(c echo.Context) error {
 
 // POST /user/meals
 func POST_user_meals(c echo.Context) error {
-	return c.JSON(http.StatusOK, SampleJSON{"Coming soon"})
+
+	//構造体を読み込む
+	u := new(operateDb.User_meal)
+	if err := c.Bind(u); err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	db := operateDb.GetConnect()
+	//DBにinsertをする
+	if err := db.Create(&u).Error; err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	return c.JSON(http.StatusOK, u)
 }
 
 // DELETE /user/meals/:id
 func DELETE_user_meals_id(c echo.Context) error {
-	return c.JSON(http.StatusOK, SampleJSON{"Coming soon"})
+	id := c.Param("id")
+	var int_id int
+	//stringからintにキャスト
+	int_id, _ = strconv.Atoi(id)
+	//構造体を読み込む
+	u := new(operateDb.User_meal)
+	if err := c.Bind(u); err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+	u.Id = int_id
+	db := operateDb.GetConnect()
+	// 削除したいレコードの情報を埋める
+	db.First(&u)
+	// 完全にレコードを特定できる状態で削除を行う
+	db.Delete(&u)
+	return c.JSON(http.StatusOK, u)
 }
 
 // PUT /user/meals/:id
 func PUT_user_meals_id(c echo.Context) error {
-	return c.JSON(http.StatusOK, SampleJSON{"Coming soon"})
+	id := c.Param("id")
+	var int_id int
+	//stringからintにキャスト
+	int_id, _ = strconv.Atoi(id)
+	//構造体を読み込む
+	u := new(operateDb.User_meal)
+	if err := c.Bind(u); err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+	u.Id = int_id
+	db := operateDb.GetConnect()
+	//updata
+	db.Model(&u).Update(&u)
+	return c.JSON(http.StatusOK, u)
 }
 
 // =========== /user/weights ============
@@ -136,17 +177,58 @@ func GET_user_weights_id(c echo.Context) error {
 
 // POST /user/weights
 func POST_user_weights(c echo.Context) error {
-	return c.JSON(http.StatusOK, SampleJSON{"Coming soon"})
+
+	//構造体を読み込む
+	u := new(operateDb.User_weight)
+	if err := c.Bind(u); err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	db := operateDb.GetConnect()
+	//DBにinsertをする
+	if err := db.Create(&u).Error; err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	return c.JSON(http.StatusOK, u)
 }
 
 // DELETE /user/weights/:id
 func DELETE_user_weights_id(c echo.Context) error {
-	return c.JSON(http.StatusOK, SampleJSON{"Coming soon"})
+	id := c.Param("id")
+	var int_id int
+	//stringからintにキャスト
+	int_id, _ = strconv.Atoi(id)
+	//構造体を読み込む
+	u := new(operateDb.User_weight)
+	if err := c.Bind(u); err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+	u.Id = int_id
+	db := operateDb.GetConnect()
+	// 削除したいレコードの情報を埋める
+	db.First(&u)
+	// 完全にレコードを特定できる状態で削除を行う
+	db.Delete(&u)
+	return c.JSON(http.StatusOK, u)
 }
 
 // PUT /user/weights/:id
 func PUT_user_weights_id(c echo.Context) error {
-	return c.JSON(http.StatusOK, SampleJSON{"Coming soon"})
+	id := c.Param("id")
+	var int_id int
+	//stringからintにキャスト
+	int_id, _ = strconv.Atoi(id)
+	//構造体を読み込む
+	u := new(operateDb.User_weight)
+	if err := c.Bind(u); err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+	u.Id = int_id
+	db := operateDb.GetConnect()
+	//updata
+	db.Model(&u).Update(&u)
+	return c.JSON(http.StatusOK, u)
 }
 
 // =========== /user/character ============
@@ -167,5 +249,14 @@ func GET_user_character(c echo.Context) error {
 
 // PUT /user/character
 func PUT_user_character(c echo.Context) error {
-	return c.JSON(http.StatusOK, SampleJSON{"Coming soon"})
+	//構造体を読み込む
+	u := new(operateDb.Character)
+	if err := c.Bind(u); err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	db := operateDb.GetConnect()
+	//updata
+	db.Model(&u).Update(&u)
+	return c.JSON(http.StatusOK, u)
 }
