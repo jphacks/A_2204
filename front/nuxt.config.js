@@ -6,7 +6,7 @@ export default {
     titleTemplate: '%s - dietapp',
     title: 'dietapp',
     htmlAttrs: {
-      lang: 'en',
+      lang: 'ja',
     },
     meta: [
       { charset: 'utf-8' },
@@ -32,6 +32,8 @@ export default {
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    // moment
+    '@nuxtjs/moment'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -43,14 +45,14 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: '/',
+    baseURL: '',
   },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: true,
+      dark: false,
       themes: {
         dark: {
           primary: colors.blue.darken2,
@@ -65,6 +67,15 @@ export default {
     },
   },
 
+  moment: {
+    locales: ['ja']
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  // Environment Variables
+  PublicRuntimeConfig: {
+    apiUrl: process.env.API_URL || "http://localhost:3000"
+  }
 }
