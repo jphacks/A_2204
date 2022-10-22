@@ -110,7 +110,7 @@ export default {
       const response = await this.$axios.$post('/user/meals', {
         calorie: Number(this.calorie),
         name: this.name,
-        at: moment(this.date).toISOString()
+        at: moment(this.date).unix()
       }).catch((e) => {
         this.snackbar = true;
         this.text = 'エラーが発生しました。'
