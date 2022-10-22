@@ -53,12 +53,17 @@ export default {
   data() {
     return {
       clipped: true,
-      drawer: true,
+      drawer: false,
       items: [
         {
           icon: 'mdi-weight',
           title: '体重',
-          to: '/user-weight',
+          to: '/weight-record',
+        },
+        {
+          icon: 'mdi-food',
+          title: '食事',
+          to: '/meal-record',
         },
         {
           icon: 'mdi-paw',

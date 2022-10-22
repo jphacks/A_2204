@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center" align="center">
-    <v-card width="350px" class="my-10">
+    <v-card width="350px" class="my-10 mx-auto">
       <v-card-title class="headline">
         食事記録
       </v-card-title>
