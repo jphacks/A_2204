@@ -14,6 +14,12 @@ type SampleJSON struct {
 	Message string `JSON:"message"`
 }
 
+type User_req struct {
+	Id       string  `json:"id"`
+	Auth0_id string  `json:"auth0_id"`
+	Height   float64 `json:"height"`
+	Birthday int64   `json:"birthday"`
+}
 type User_meal_res struct {
 	Id      int       `json:"id"`
 	User_id int       `json:"user_id"`
@@ -34,6 +40,59 @@ type Character_res struct {
 	Name    string `json:"name"`
 	Level   int    `json:"level"`
 	Exp     int    `json:"exp"`
+}
+
+// =========== /user ===========
+// GET /user
+func GET_user(c echo.Context) error {
+	db := operateDb.GetConnect()
+	claims := c.Get("claims").(*validator.ValidatedClaims)
+	var user operateDb.User
+	db.Where("Auth0_id = ?", claims.RegisteredClaims.Subject).First(&user)
+
+	return c.JSON(http.StatusOK, user)
+}
+
+// POST /user
+func POST_user(c echo.Context) error {
+	db := operateDb.GetConnect()
+	claims := c.Get("claims").(*validator.ValidatedClaims)
+	var user operateDb.User
+
+	user.Auth0_id = claims.RegisteredClaims.Subject
+	reqBody := new(User_req)
+	if err := c.Bind(reqBody); err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	user.Height = reqBody.Height
+	user.Birthday = time.Unix(reqBody.Birthday, 0)
+
+	if err := db.Create(&user).Error; err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, user)
+}
+
+// PUT /user
+func PUT_user(c echo.Context) error {
+	db := operateDb.GetConnect()
+	claims := c.Get("claims").(*validator.ValidatedClaims)
+	var user operateDb.User
+	db.Where("Auth0_id = ?", claims.RegisteredClaims.Subject).First(&user)
+
+	reqBody := new(User_req)
+	if err := c.Bind(reqBody); err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	user.Height = reqBody.Height
+	user.Birthday = time.Unix(reqBody.Birthday, 0)
+
+	if err := db.Table("users").Where("id = ?", user.Id).Updates(operateDb.User{Height: user.Height, Birthday: user.Birthday}).Error; err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, reqBody)
 }
 
 // =========== /user/meals ===========
