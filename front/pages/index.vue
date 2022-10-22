@@ -18,16 +18,27 @@ import moment from 'moment'
 export default {
   data: () => ({
     now: moment(),
-    weight: 55.0,
+    weight: '',
+    meal: '',
     loading: false
   }),
-  created () {
+  async created () {
     this.now = moment()
-    this.weight = 55.0
-    this.meal = "ラーメン"
     this.loading = false
     this.snackbar = false
     this.text = ''
-  },
+    const response1 = await this.$axios.$get('/user/weights?at=1666364400').catch((e) => {
+        this.snackbar = true;
+        this.text = 'エラーが発生しました。'
+    });
+    const response2 = await this.$axios.$get('/user/meals?at=1666191600').catch((e) => {
+        this.snackbar = true;
+        this.text = 'エラーが発生しました。'
+    });
+      console.log(response1)
+    this.weight = response1[0].weights
+      this.meal = response2[0].name
+      this.snackbar = true;
+    },
 }
 </script>
