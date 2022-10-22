@@ -56,6 +56,11 @@ export default {
       drawer: false,
       items: [
         {
+          icon: 'mdi-home',
+          title: 'ホーム',
+          to: '/',
+        },
+        {
           icon: 'mdi-weight',
           title: '体重',
           to: '/weight-record',
