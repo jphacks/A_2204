@@ -2,11 +2,11 @@
   <v-row justify="center" align="center">
     <v-card width="350px" class="my-10">
       <v-card-title class="headline">
-        体重記録
+        食事記録
       </v-card-title>
       <v-card-text>
         <p>
-          体重を記録
+          食事を記録
         </p>
         <v-menu
           ref="menu"
@@ -51,14 +51,20 @@
           </v-date-picker>
         </v-menu>
         <v-text-field
-            v-model="weights"
+            v-model="name"
             required
-            label="体重を入力"
-            suffix="kg"
-            placeholder="XX.X"
-            prepend-icon="mdi-human"
+            label="食事を入力"
+            placeholder=""
+            prepend-icon="mdi-food-fork-drink"
         ></v-text-field>
-        
+        <v-text-field
+            v-model="calorie"
+            required
+            label="カロリーを入力"
+            suffix="kcal"
+            placeholder="512"
+            prepend-icon="mdi-calculator"
+        ></v-text-field>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -95,13 +101,15 @@ export default {
     snackbar: false,
     text: "",
     date: "",
-    weights: ""
+    name: "",
+    calorie:""
   }),
   methods: {
     async record() {
       this.loading = true
-      const response = await this.$axios.$post('/user/weights', {
-        weights: Number(this.weights),
+      const response = await this.$axios.$post('/user/meals', {
+        calorie: Number(this.calorie),
+        name: this.name,
         at: moment(this.date).toISOString()
       }).catch((e) => {
         this.snackbar = true;
