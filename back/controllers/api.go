@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/auth0/go-jwt-middleware/v2/validator"
 	"github.com/labstack/echo/v4"
 )
 
@@ -35,6 +36,8 @@ func DELETE_user_meals_id(c echo.Context) error {
 
 // PUT /user/meals/:id
 func PUT_user_meals_id(c echo.Context) error {
+	claims := c.Get("claims").(*validator.ValidatedClaims)
+	auth0_id := claims.RegisteredClaims.Subject
 	id := c.Param("id")
 	var int_id int
 	//stringからintにキャスト
@@ -44,8 +47,9 @@ func PUT_user_meals_id(c echo.Context) error {
 	if err := c.Bind(u); err != nil {
 		return c.String(http.StatusBadRequest, "bad request")
 	}
-	u.Id = int_id
 	db := operateDb.GetConnect()
+	u.Id = int_id
+	db.Where("name = ?", auth0_id).First(&u)
 	//updata
 	db.Model(&u).Update(&u)
 	return c.JSON(http.StatusOK, u)
@@ -74,6 +78,8 @@ func DELETE_user_weights_id(c echo.Context) error {
 
 // PUT /user/weights/:id
 func PUT_user_weights_id(c echo.Context) error {
+	claims := c.Get("claims").(*validator.ValidatedClaims)
+	auth0_id := claims.RegisteredClaims.Subject
 	id := c.Param("id")
 	var int_id int
 	//stringからintにキャスト
@@ -85,6 +91,7 @@ func PUT_user_weights_id(c echo.Context) error {
 	}
 	u.Id = int_id
 	db := operateDb.GetConnect()
+	db.Where("name = ?", auth0_id).First(&u)
 	//updata
 	db.Model(&u).Update(&u)
 	return c.JSON(http.StatusOK, u)
