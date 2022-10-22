@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  front:
+    build: 
+      context: ./front
+      dockerfile: Dockerfile
+    volumes:
+      - ./front:/app
+    ports:
+      - "8080:3000"
+    tty: true
+    environment:
+      NODE_ENV: development
+      port: 3000
+      HOST: 0.0.0.0
+      API_URL: "http://localhost:3001"
+
+  back:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    volumes:
+      - ./back:/app
+    ports:
+      - "3000:3000"
+    tty: true
+
+  db:
+    image: mysql:latest
+
+  api-mock:
+    build:
+      context: ./api-mockserver
+      dockerfile: Dockerfile
+    volumes:
+      - ./api-mockserver:/app
+    tty: true
+    ports: 
+      - "3001:3000"
+    command: json-server --watch /app/api.json --routes /app/routes.json --host 0.0.0.0
+    
