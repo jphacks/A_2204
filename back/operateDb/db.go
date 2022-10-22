@@ -2,7 +2,6 @@ package operateDb
 
 import (
 	"os"
-	"time"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -12,25 +11,25 @@ var db *gorm.DB
 
 // データベースに入れるtable
 type User struct {
-	Id       int       `json:"id" gorm:"primaryKey;autoIncrement"`
-	Auth0_id string    `json:"auth0_id" gorm:"unique"`
-	Height   float64   `json:"height"`
-	Birthday time.Time `json:"birthday"`
+	Id       int     `json:"id" gorm:"primaryKey;autoIncrement"`
+	Auth0_id string  `json:"auth0_id" gorm:"unique"`
+	Height   float64 `json:"height"`
+	Birthday int64   `json:"birthday"`
 }
 type User_meal struct {
-	Id      int       `json:"id" gorm:"primaryKey;autoIncrement"`
-	User_id int       `json:"user_id"`
-	User    User      `gorm:"foreignKey:User_id"`
-	Name    string    `json:"name"`
-	Calorie int       `json:"calorie"`
-	At      time.Time `json:"at"`
+	Id      int    `json:"id" gorm:"primaryKey;autoIncrement"`
+	User_id int    `json:"user_id"`
+	User    User   `gorm:"foreignKey:User_id"`
+	Name    string `json:"name"`
+	Calorie int    `json:"calorie"`
+	At      int64  `json:"at"`
 }
 type User_weight struct {
-	Id      int       `json:"id" gorm:"primaryKey;autoIncrement"`
-	User_id int       `json:"user_id"`
-	User    User      `gorm:"foreignKey:User_id"`
-	Weight  float64   `json:"weight"`
-	At      time.Time `json:"at"`
+	Id      int     `json:"id" gorm:"primaryKey;autoIncrement"`
+	User_id int     `json:"user_id"`
+	User    User    `gorm:"foreignKey:User_id"`
+	Weight  float64 `json:"weight"`
+	At      int64   `json:"at"`
 }
 type Character struct {
 	User_id int    `json:"user_id" gorm:"primaryKey"`

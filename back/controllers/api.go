@@ -65,11 +65,23 @@ func POST_user(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 	user.Height = reqBody.Height
-	user.Birthday = time.Unix(reqBody.Birthday, 0)
+	user.Birthday = reqBody.Birthday
 
 	if err := db.Create(&user).Error; err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
+
+	character := &operateDb.Character{
+		User_id: user.Id,
+		Name:    "",
+		Level:   1,
+		Exp:     0,
+	}
+
+	if err := db.Create(&character).Error; err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
 	return c.JSON(http.StatusOK, user)
 }
 
@@ -86,7 +98,7 @@ func PUT_user(c echo.Context) error {
 	}
 
 	user.Height = reqBody.Height
-	user.Birthday = time.Unix(reqBody.Birthday, 0)
+	user.Birthday = reqBody.Birthday
 
 	if err := db.Table("users").Where("id = ?", user.Id).Updates(operateDb.User{Height: user.Height, Birthday: user.Birthday}).Error; err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
@@ -105,11 +117,11 @@ func GET_user_meals(c echo.Context) error {
 
 	db = db.Where("user_id = ?", user.Id)
 
-	before, err := time.Parse(time.RFC3339Nano, c.QueryParam("before"))
+	before, err := strconv.ParseInt(c.QueryParam("before"), 10, 64)
 	if err == nil {
 		db = db.Where("at <= ?", before)
 	}
-	after, err := time.Parse(time.RFC3339Nano, c.QueryParam("after"))
+	after, err := strconv.ParseInt(c.QueryParam("after"), 10, 64)
 	if err == nil {
 		db = db.Where("? <= at", after)
 	}
@@ -141,6 +153,10 @@ func GET_user_meals_id(c echo.Context) error {
 
 // POST /user/meals
 func POST_user_meals(c echo.Context) error {
+	db := operateDb.GetConnect()
+	claims := c.Get("claims").(*validator.ValidatedClaims)
+	var user operateDb.User
+	db.Model(&operateDb.User{Auth0_id: claims.RegisteredClaims.Subject}).First(&user)
 
 	//構造体を読み込む
 	u := new(operateDb.User_meal)
@@ -148,7 +164,7 @@ func POST_user_meals(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "bad request")
 	}
 
-	db := operateDb.GetConnect()
+	u.User_id = user.Id
 	//DBにinsertをする
 	if err := db.Create(&u).Error; err != nil {
 		return c.String(http.StatusBadRequest, "bad request")
@@ -205,11 +221,11 @@ func GET_user_weights(c echo.Context) error {
 
 	db = db.Where("user_id = ?", user.Id)
 
-	before, err := time.Parse(time.RFC3339Nano, c.QueryParam("before"))
+	before, err := strconv.ParseInt(c.QueryParam("before"), 10, 64)
 	if err == nil {
 		db = db.Where("at <= ?", before)
 	}
-	after, err := time.Parse(time.RFC3339Nano, c.QueryParam("after"))
+	after, err := strconv.ParseInt(c.QueryParam("after"), 10, 64)
 	if err == nil {
 		db = db.Where("? <= at", after)
 	}
@@ -236,6 +252,10 @@ func GET_user_weights_id(c echo.Context) error {
 
 // POST /user/weights
 func POST_user_weights(c echo.Context) error {
+	db := operateDb.GetConnect()
+	claims := c.Get("claims").(*validator.ValidatedClaims)
+	var user operateDb.User
+	db.Model(&operateDb.User{Auth0_id: claims.RegisteredClaims.Subject}).First(&user)
 
 	//構造体を読み込む
 	u := new(operateDb.User_weight)
@@ -243,7 +263,8 @@ func POST_user_weights(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "bad request")
 	}
 
-	db := operateDb.GetConnect()
+	u.User_id = user.Id
+
 	//DBにinsertをする
 	if err := db.Create(&u).Error; err != nil {
 		return c.String(http.StatusBadRequest, "bad request")
