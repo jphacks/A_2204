@@ -47,7 +47,7 @@ func Init() {
 	PROTOCOL := os.Getenv("DB_PROTOCOL")
 	DBNAME := os.Getenv("DB_DBNAME")
 
-	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME
+	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?parseTime=true"
 	//データベースを開ける
 	dbCon, err := gorm.Open(DBMS, CONNECT)
 	//ローカル変数のdbCOnをグローバル変数のdbに入れる

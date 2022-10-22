@@ -43,6 +43,11 @@ func main() {
 		return c.JSON(http.StatusOK, c.Get("claims").(*validator.ValidatedClaims).RegisteredClaims)
 	})
 
+	// /api/user
+	api.GET("/user", controllers.GET_user)
+	api.POST("/user", controllers.POST_user)
+	api.PUT("/user", controllers.PUT_user)
+
 	// /api/user/meals
 	api.GET("/user/meals", controllers.GET_user_meals)
 	api.GET("/user/meals/:id", controllers.GET_user_meals_id)
