@@ -1,5 +1,5 @@
 use dietapp;
-create table user(
+create table users(
     ID INT AUTO_INCREMENT,
     auth0_id varchar,
     height float,
@@ -14,7 +14,7 @@ create table user_meals(
     at data,
     PRIMARY KEY (id)
 );
-create table user_weight(
+create table user_weights(
     ID INT AUTO_INCREMENT,
     user_id int,
     weight float,
