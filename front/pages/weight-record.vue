@@ -102,7 +102,7 @@ export default {
       this.loading = true
       const response = await this.$axios.$post('/user/weights', {
         weights: Number(this.weights),
-        at: moment(this.date).toISOString()
+        at: moment(this.date).unix()
       }).catch((e) => {
         this.snackbar = true;
         this.text = 'エラーが発生しました。'
